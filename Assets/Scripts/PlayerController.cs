@@ -5,12 +5,28 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    public float speed;
+    private float _speed;
+    private float _speedLimit = 80f;
+
+
     private float turningSpeed = 120;
     private float horizontalInput;
     private float verticalInput;
     private bool accelerate;
     private bool decelerate;
+
+    public float Speed
+    {
+        get => _speed;
+        set => _speed = value;
+    }
+
+    public float SpeedLimit
+    {
+        get => _speedLimit;
+        set => _speedLimit = value;
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -20,15 +36,19 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        DriveCar();
+    }
+
+    void DriveCar()
+    {
         horizontalInput = Input.GetAxis("Horizontal");
         verticalInput = Input.GetAxis("Vertical");
-
-
 
         if (Input.GetKeyDown(KeyCode.W))
         {
             accelerate = true;
-        } else if (Input.GetKeyUp(KeyCode.W))
+        }
+        else if (Input.GetKeyUp(KeyCode.W))
         {
             accelerate = false;
         }
@@ -36,7 +56,8 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.S))
         {
             decelerate = true;
-        } else if (Input.GetKeyUp(KeyCode.S))
+        }
+        else if (Input.GetKeyUp(KeyCode.S))
         {
             decelerate = false;
         }
@@ -44,28 +65,33 @@ public class PlayerController : MonoBehaviour
         if (accelerate)
         {
             int variable = 2;
-            if (speed <= 80) speed += variable;
+            if (Speed <= SpeedLimit) Speed += variable;
         }
-        else if (!accelerate && speed != 0)
+        else if (!accelerate && Speed != 0)
         {
-            if (speed > 0) speed -= 1.0f;
+            if (Speed > 0) Speed -= 1.0f;
         }
 
         if (decelerate)
         {
             int variable = 1;
-            if (speed >= -20) speed -= variable;
+            if (Speed >= -20) Speed -= variable;
         }
-        else if (!decelerate && speed != 0)
+        else if (!decelerate && Speed != 0)
         {
-            if (speed < 0) speed += 1;
+            if (Speed < 0) Speed += 1;
         }
 
-        transform.Translate(Vector3.forward * Time.deltaTime * speed);
+        transform.Translate(Vector3.forward * Time.deltaTime * Speed);
 
         float invertedHorizontalInput = horizontalInput * Mathf.Sign(verticalInput);
 
-        if (speed > 0) transform.Rotate(Vector3.up, horizontalInput * Time.deltaTime * turningSpeed);
-        if (speed < 0) transform.Rotate(Vector3.up, invertedHorizontalInput * Time.deltaTime * turningSpeed);
+        if (Speed > 0) transform.Rotate(Vector3.up, horizontalInput * Time.deltaTime * turningSpeed);
+        if (Speed < 0) transform.Rotate(Vector3.up, invertedHorizontalInput * Time.deltaTime * turningSpeed);
+    }
+
+    public void ChangeSpeed()
+    {
+
     }
 }
